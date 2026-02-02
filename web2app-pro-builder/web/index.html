@@ -1,1 +1,73 @@
-test
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Web2App Pro Builder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>Web2App Pro Builder</h1>
+    <p class="sub">Website ZIP/URL → APK/AAB | AdMob + Honeygain(dummy)</p>
+
+    <div class="card">
+      <label>API Base URL</label>
+      <input id="apiBase" value="http://localhost:5050" />
+
+      <label>App Name</label>
+      <input id="appName" value="Web2App Pro" />
+
+      <label>Package Name</label>
+      <input id="packageName" value="com.web2apppro" />
+
+      <div class="row">
+        <div>
+          <label>Version Name</label>
+          <input id="versionName" value="1.0" />
+        </div>
+        <div>
+          <label>Version Code</label>
+          <input id="versionCode" value="1" />
+        </div>
+      </div>
+
+      <label>Website Source</label>
+      <select id="urlMode">
+        <option value="zip">Upload ZIP</option>
+        <option value="url">URL (WebView)</option>
+      </select>
+
+      <div id="zipBox">
+        <label>website.zip</label>
+        <input id="zipFile" type="file" accept=".zip" />
+      </div>
+
+      <div id="urlBox" style="display:none">
+        <label>Website URL</label>
+        <input id="websiteUrl" placeholder="https://example.com" />
+      </div>
+
+      <label>Build Type</label>
+      <select id="buildType">
+        <option value="apk">APK</option>
+        <option value="aab">AAB</option>
+        <option value="both">Both</option>
+      </select>
+
+      <label>Plugins</label>
+      <div class="checks">
+        <label><input type="checkbox" id="enableAdmob" checked /> AdMob</label>
+        <label><input type="checkbox" id="enableHoneygain" /> Honeygain (Dummy)</label>
+      </div>
+
+      <button id="btnBuild">Build Now</button>
+
+      <pre id="log"></pre>
+      <div id="downloads"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
