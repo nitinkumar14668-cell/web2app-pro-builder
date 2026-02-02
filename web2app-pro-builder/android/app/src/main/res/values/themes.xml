@@ -1,1 +1,5 @@
-test
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Web2AppPro" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="l">#0B1220</item>
+    </style>
+</resources>
