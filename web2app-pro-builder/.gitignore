@@ -1,0 +1,16 @@
+# Node
+api/node_modules/
+npm-debug.log*
+
+# storage runtime
+storage/uploads/
+storage/builds/
+
+# Android
+android/.gradle/
+android/**/build/
+android/local.properties
+
+# OS
+.DS_Store
+Thumbs.db
