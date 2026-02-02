@@ -22,16 +22,16 @@ jobs:
 
       - name: Unzip Website into Android assets
         run: |
-          mkdir -p android-template/app/src/main/assets/www
-          rm -rf android-template/app/src/main/assets/www/*
-          unzip -o build-input/website.zip -d android-template/app/src/main/assets/www
+          mkdir -p android/app/src/main/assets/www
+          rm -rf android/app/src/main/assets/www/*
+          unzip -o input/website.zip -d android/app/src/main/assets/www
 
-      - name: Run Patch Script (safe)
+      - name: Run Patch Script
         run: |
           python3 scripts/patch.py
 
       - name: Build APK + AAB
-        working-directory: android-template
+        working-directory: android
         run: |
           chmod +x gradlew
           ./gradlew clean
@@ -43,5 +43,5 @@ jobs:
         with:
           name: Web2AppPro-Build
           path: |
-            android-template/app/build/outputs/apk/release/*.apk
-            android-template/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/bundle/release/*.aab
