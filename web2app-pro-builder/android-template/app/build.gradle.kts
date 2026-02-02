@@ -13,7 +13,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         multiDexEnabled = true
     }
 
@@ -25,13 +24,11 @@ android {
                 "proguard-rules.pro"
             )
         }
-        debug {
-            isMinifyEnabled = false
-        }
+        debug { isMinifyEnabled = false }
     }
 
     buildFeatures {
-        viewBinding = true
+        viewBinding = false
     }
 
     compileOptions {
@@ -47,9 +44,8 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    // Google Mobile Ads SDK (AdMob)
+    // AdMob
     implementation("com.google.android.gms:play-services-ads:23.0.0")
 }
