@@ -1,1 +1,12 @@
-test
+body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;background:#0b1220;color:#fff}
+.wrap{max-width:760px;margin:0 auto;padding:24px}
+h1{margin:0 0 8px}
+.sub{opacity:.8;margin:0 0 16px}
+.card{background:#111a2e;border:1px solid #1f2a44;border-radius:16px;padding:16px}
+label{display:block;margin-top:12px;font-size:14px;opacity:.9}
+input,select{width:100%;padding:10px;border-radius:12px;border:1px solid #2a3a60;background:#0b1220;color:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checks{display:flex;gap:18px;margin-top:8px}
+button{margin-top:16px;width:100%;padding:12px;border-radius:14px;border:0;background:#4f7cff;color:#fff;font-weight:700;cursor:pointer}
+pre{margin-top:16px;background:#0b1220;border:1px solid #2a3a60;border-radius:12px;padding:10px;white-space:pre-wrap}
+a{color:#9bd0ff}
