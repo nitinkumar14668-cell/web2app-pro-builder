@@ -1,1 +1,27 @@
-test
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/chkBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Banner"/>
+
+    <CheckBox
+        android:id="@+id/chkInterstitial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Interstitial"/>
+
+    <CheckBox
+        android:id="@+id/chkRewarded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Rewarded"/>
+
+</LinearLayout>
