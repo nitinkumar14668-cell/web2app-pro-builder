@@ -1,1 +1,3 @@
-test
+<resources>
+    <string name="app_name">Web2App Pro</string>
+</resources>
