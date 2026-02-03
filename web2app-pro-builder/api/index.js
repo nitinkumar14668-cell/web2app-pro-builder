@@ -52,12 +52,12 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
       packageName = "com.web2apppro",
       versionName = "1.0",
       versionCode = "1",
-      buildType = "apk", // apk | aab | both
-      urlMode = "zip",   // zip | url
+      buildType = "apk",
+      urlMode = "zip",
       websiteUrl = "",
       enableAdmob = "true",
 
-      // ✅ NEW: AdMob IDs (default = your ids)
+      // ✅ NEW: AdMob IDs from frontend
       admobAppId = "pub-3546008790006961~3626414349",
       admobBannerId = "ca-app-pub-3546008790006961/4883947277",
       admobInterstitialId = "ca-app-pub-3546008790006961/2919837333",
@@ -101,7 +101,7 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
       )
     );
 
-    // Patch
+    // ✅ Run patch.py with AdMob IDs
     const patchScript = path.join(ROOT, "scripts", "patch.py");
     const args = [
       patchScript,
@@ -113,8 +113,6 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
       "--enableAdmob", enableAdmob,
       "--urlMode", urlMode,
       "--websiteUrl", websiteUrl,
-
-      // ✅ NEW: pass AdMob IDs
       "--admobAppId", admobAppId,
       "--admobBannerId", admobBannerId,
       "--admobInterstitialId", admobInterstitialId,
@@ -123,13 +121,11 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
 
     if (zipPath) args.push("--zip", zipPath);
 
-    // IMPORTANT FIX for Termux:
-    // python -> python3 (Termux me python command mostly nahi hota)
+    // IMPORTANT: use python3 in Termux/Unix
     await run("python3", args, ROOT);
 
-    // Build
+    // Build APK/AAB
     const gradlew = process.platform === "win32" ? "gradlew.bat" : "./gradlew";
-
     await run(gradlew, ["clean"], ANDROID_PROJECT_PATH);
 
     let outputs = [];
