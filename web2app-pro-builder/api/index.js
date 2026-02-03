@@ -56,7 +56,12 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
       urlMode = "zip",   // zip | url
       websiteUrl = "",
       enableAdmob = "true",
-      enableHoneygain = "false"
+
+      // ✅ NEW: AdMob IDs (default = your ids)
+      admobAppId = "pub-3546008790006961~3626414349",
+      admobBannerId = "ca-app-pub-3546008790006961/4883947277",
+      admobInterstitialId = "ca-app-pub-3546008790006961/2919837333",
+      admobRewardedId = "ca-app-pub-3546008790006961/5224354917",
     } = req.body;
 
     const jobDir = path.join(BUILDS, jobId);
@@ -81,7 +86,15 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
           buildType,
           urlMode,
           websiteUrl,
-          plugins: { admob: enableAdmob === "true", honeygain: enableHoneygain === "true" }
+          plugins: {
+            admob: enableAdmob === "true"
+          },
+          admob: {
+            admobAppId,
+            admobBannerId,
+            admobInterstitialId,
+            admobRewardedId
+          }
         },
         null,
         2
@@ -98,13 +111,21 @@ app.post("/build", upload.single("websiteZip"), async (req, res) => {
       "--versionName", versionName,
       "--versionCode", versionCode,
       "--enableAdmob", enableAdmob,
-      "--enableHoneygain", enableHoneygain,
       "--urlMode", urlMode,
-      "--websiteUrl", websiteUrl
+      "--websiteUrl", websiteUrl,
+
+      // ✅ NEW: pass AdMob IDs
+      "--admobAppId", admobAppId,
+      "--admobBannerId", admobBannerId,
+      "--admobInterstitialId", admobInterstitialId,
+      "--admobRewardedId", admobRewardedId
     ];
+
     if (zipPath) args.push("--zip", zipPath);
 
-    await run("python", args, ROOT);
+    // IMPORTANT FIX for Termux:
+    // python -> python3 (Termux me python command mostly nahi hota)
+    await run("python3", args, ROOT);
 
     // Build
     const gradlew = process.platform === "win32" ? "gradlew.bat" : "./gradlew";
