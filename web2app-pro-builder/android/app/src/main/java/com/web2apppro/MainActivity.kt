@@ -12,7 +12,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardItem
@@ -32,6 +36,14 @@ class MainActivity : AppCompatActivity() {
 
     private var urlMode: String = "zip"
     private var websiteUrl: String = ""
+
+    // Ad Unit IDs
+    private val INTERSTITIAL_ID = "ca-app-pub-3546008790006961/2919837333"
+    private val BANNER_ID = "ca-app-pub-3546008790006961/4883947277"
+
+    // NOTE: tumne rewarded id provide nahi kiya tha
+    // isliye safe placeholder rakha hai, agar tum doge to main update kar dunga
+    private val REWARDED_ID = ""  // <-- yaha rewarded ad unit id dalna
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +116,12 @@ class MainActivity : AppCompatActivity() {
                 toast("Rewarded disabled")
                 return@setOnClickListener
             }
+
+            if (REWARDED_ID.isBlank()) {
+                toast("Rewarded AdUnitId missing")
+                return@setOnClickListener
+            }
+
             val ad = rewardedAd
             if (ad != null) {
                 ad.show(this) { rewardItem: RewardItem ->
@@ -133,9 +151,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         if (Prefs.isBannerEnabled(this)) {
             adView.visibility = View.VISIBLE
-            adView.loadAd(AdRequest.Builder().build())
+            val req = AdRequest.Builder().build()
+            adView.loadAd(req)
         } else {
             adView.visibility = View.GONE
         }
@@ -146,9 +166,10 @@ class MainActivity : AppCompatActivity() {
             interstitialAd = null
             return
         }
+
         InterstitialAd.load(
             this,
-            "ca-app-pub-3546008790006961/2919837333",
+            INTERSTITIAL_ID,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -160,6 +181,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     interstitialAd = null
                 }
@@ -172,14 +194,21 @@ class MainActivity : AppCompatActivity() {
             rewardedAd = null
             return
         }
+
+        if (REWARDED_ID.isBlank()) {
+            rewardedAd = null
+            return
+        }
+
         RewardedAd.load(
             this,
-            "ca-app-pub-3546008790006961/5224354917",
+            REWARDED_ID,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
                 }
+
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     rewardedAd = null
                 }
