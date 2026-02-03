@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
         InterstitialAd.load(
             this,
-            "ca-app-pub-3940256099942544/1033173712",
+            "ca-app-pub-3546008790006961/2919837333",
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         }
         RewardedAd.load(
             this,
-            "ca-app-pub-3940256099942544/5224354917",
+            "ca-app-pub-3546008790006961/5224354917",
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
