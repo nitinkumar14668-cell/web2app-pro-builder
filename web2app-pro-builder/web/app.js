@@ -31,8 +31,17 @@ document.getElementById("btnBuild").addEventListener("click", async () => {
   data.append("buildType", buildType);
   data.append("urlMode", urlMode);
 
-  data.append("enableAdmob", document.getElementById("enableAdmob").checked ? "true" : "false");
-  data.append("enableHoneygain", document.getElementById("enableHoneygain").checked ? "true" : "false");
+  // Plugins
+  const enableAdmob = document.getElementById("enableAdmob").checked;
+  data.append("enableAdmob", enableAdmob ? "true" : "false");
+
+  // ✅ NEW: AdMob IDs
+  if (enableAdmob) {
+    data.append("admobAppId", document.getElementById("admobAppId").value.trim());
+    data.append("admobBannerId", document.getElementById("admobBannerId").value.trim());
+    data.append("admobInterstitialId", document.getElementById("admobInterstitialId").value.trim());
+    data.append("admobRewardedId", document.getElementById("admobRewardedId").value.trim());
+  }
 
   if (urlMode === "zip") {
     const f = document.getElementById("zipFile").files[0];
@@ -71,4 +80,4 @@ document.getElementById("btnBuild").addEventListener("click", async () => {
     log("❌ Error:");
     log(String(e));
   }
-}); 
+});
