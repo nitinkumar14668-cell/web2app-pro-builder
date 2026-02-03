@@ -5,6 +5,7 @@ function log(msg) {
   logEl.textContent += msg + "\n";
 }
 
+// Toggle ZIP/URL inputs
 const urlModeEl = document.getElementById("urlMode");
 const zipBox = document.getElementById("zipBox");
 const urlBox = document.getElementById("urlBox");
@@ -15,6 +16,14 @@ urlModeEl.addEventListener("change", () => {
   urlBox.style.display = mode === "url" ? "block" : "none";
 });
 
+// Toggle AdMob box visibility
+const enableAdmobEl = document.getElementById("enableAdmob");
+const admobBox = document.getElementById("admobBox");
+enableAdmobEl.addEventListener("change", () => {
+  admobBox.style.display = enableAdmobEl.checked ? "block" : "none";
+});
+
+// Build button
 document.getElementById("btnBuild").addEventListener("click", async () => {
   logEl.textContent = "";
   downloadsEl.innerHTML = "";
@@ -43,6 +52,7 @@ document.getElementById("btnBuild").addEventListener("click", async () => {
     data.append("admobRewardedId", document.getElementById("admobRewardedId").value.trim());
   }
 
+  // Website input
   if (urlMode === "zip") {
     const f = document.getElementById("zipFile").files[0];
     if (!f) return log("❌ Please select website.zip");
