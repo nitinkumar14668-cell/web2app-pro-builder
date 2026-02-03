@@ -37,13 +37,12 @@ class MainActivity : AppCompatActivity() {
     private var urlMode: String = "zip"
     private var websiteUrl: String = ""
 
-    // Ad Unit IDs
-    private val INTERSTITIAL_ID = "ca-app-pub-3546008790006961/2919837333"
-    private val BANNER_ID = "ca-app-pub-3546008790006961/4883947277"
+    // ✅ Your AdMob Unit IDs
+    private val INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3546008790006961/2919837333"
+    private val BANNER_AD_UNIT_ID = "ca-app-pub-3546008790006961/4883947277"
 
-    // NOTE: tumne rewarded id provide nahi kiya tha
-    // isliye safe placeholder rakha hai, agar tum doge to main update kar dunga
-    private val REWARDED_ID = ""  // <-- yaha rewarded ad unit id dalna
+    // ❗Rewarded ID tumne provide nahi kiya
+    // private val REWARDED_AD_UNIT_ID = "ca-app-pub-xxxxxxxxxxxxxxxx/xxxxxxxxxx"
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        // AdMob Init
+        // ✅ AdMob Init
         MobileAds.initialize(this) {}
 
         // Banner
@@ -97,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
         // Load ads
         loadInterstitialIfEnabled()
-        loadRewardedIfEnabled()
+        loadRewardedIfEnabled() // safe
 
         btnInterstitial.setOnClickListener {
             if (!Prefs.isInterstitialEnabled(this)) {
@@ -105,7 +104,9 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val ad = interstitialAd
-            if (ad != null) ad.show(this) else {
+            if (ad != null) {
+                ad.show(this)
+            } else {
                 toast("Interstitial not ready")
                 loadInterstitialIfEnabled()
             }
@@ -116,12 +117,6 @@ class MainActivity : AppCompatActivity() {
                 toast("Rewarded disabled")
                 return@setOnClickListener
             }
-
-            if (REWARDED_ID.isBlank()) {
-                toast("Rewarded AdUnitId missing")
-                return@setOnClickListener
-            }
-
             val ad = rewardedAd
             if (ad != null) {
                 ad.show(this) { rewardItem: RewardItem ->
@@ -132,9 +127,6 @@ class MainActivity : AppCompatActivity() {
                 loadRewardedIfEnabled()
             }
         }
-
-        // Honeygain Dummy init
-        HoneygainDummy.init()
     }
 
     private fun loadConfig() {
@@ -151,11 +143,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         if (Prefs.isBannerEnabled(this)) {
             adView.visibility = View.VISIBLE
-            val req = AdRequest.Builder().build()
-            adView.loadAd(req)
+            // Banner load
+            adView.loadAd(AdRequest.Builder().build())
         } else {
             adView.visibility = View.GONE
         }
@@ -169,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
         InterstitialAd.load(
             this,
-            INTERSTITIAL_ID,
+            INTERSTITIAL_AD_UNIT_ID,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -190,19 +181,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadRewardedIfEnabled() {
-        if (!Prefs.isRewardedEnabled(this)) {
-            rewardedAd = null
-            return
-        }
+        // ❗ Rewarded ID missing → safely disable loading
+        rewardedAd = null
+        return
 
-        if (REWARDED_ID.isBlank()) {
+        /*
+        if (!Prefs.isRewardedEnabled(this)) {
             rewardedAd = null
             return
         }
 
         RewardedAd.load(
             this,
-            REWARDED_ID,
+            REWARDED_AD_UNIT_ID,
             AdRequest.Builder().build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
@@ -214,6 +205,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+        */
     }
 
     private fun toast(msg: String) {
@@ -223,13 +215,5 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (::webView.isInitialized && webView.canGoBack()) webView.goBack()
         else super.onBackPressed()
-    }
-}
-
-// Honeygain Dummy placeholder
-object HoneygainDummy {
-    fun init() {
-        // Later: replace with real Honeygain SDK init
-        // HoneygainSDK.init(...)
     }
 }
