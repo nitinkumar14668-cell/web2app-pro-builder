@@ -9,7 +9,7 @@
 <body>
   <div class="wrap">
     <h1>Web2App Pro Builder</h1>
-    <p class="sub">Website ZIP/URL → APK/AAB | AdMob + Honeygain(dummy)</p>
+    <p class="sub">Website ZIP/URL → APK/AAB | AdMob</p>
 
     <div class="card">
       <label>API Base URL</label>
@@ -58,7 +58,23 @@
       <label>Plugins</label>
       <div class="checks">
         <label><input type="checkbox" id="enableAdmob" checked /> AdMob</label>
-        <label><input type="checkbox" id="enableHoneygain" /> Honeygain (Dummy)</label>
+      </div>
+
+      <!-- ✅ NEW: AdMob Settings -->
+      <div class="admobBox" id="admobBox">
+        <h3 class="sectionTitle">AdMob Settings</h3>
+
+        <label>AdMob App ID</label>
+        <input id="admobAppId" value="pub-3546008790006961~3626414349" />
+
+        <label>Banner Ad Unit ID</label>
+        <input id="admobBannerId" value="ca-app-pub-3546008790006961/4883947277" />
+
+        <label>Interstitial Ad Unit ID</label>
+        <input id="admobInterstitialId" value="ca-app-pub-3546008790006961/2919837333" />
+
+        <label>Rewarded Ad Unit ID</label>
+        <input id="admobRewardedId" value="ca-app-pub-3546008790006961/5224354917" />
       </div>
 
       <button id="btnBuild">Build Now</button>
