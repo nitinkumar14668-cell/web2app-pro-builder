@@ -4,7 +4,6 @@ import shutil
 import zipfile
 import json
 
-
 # ---------- helpers ----------
 def read_file(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -16,14 +15,14 @@ def write_file(path, content):
         f.write(content)
 
 def replace_in_file(path, old, new):
+    if not os.path.exists(path):
+        return False
     data = read_file(path)
     if old not in data:
-        # don't crash, just continue
         return False
     data = data.replace(old, new)
     write_file(path, data)
     return True
-
 
 def unzip_website(zip_path, dest_www):
     if os.path.exists(dest_www):
@@ -53,7 +52,6 @@ def unzip_website(zip_path, dest_www):
     if not os.path.exists(os.path.join(dest_www, "index.html")):
         raise Exception("index.html not found inside website.zip")
 
-
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
@@ -69,7 +67,7 @@ def main():
     ap.add_argument("--urlMode", required=True)      # zip|url
     ap.add_argument("--websiteUrl", default="")
 
-    # AdMob IDs (permanent/auto patch)
+    # AdMob IDs
     ap.add_argument("--admobAppId", default="pub-3546008790006961~3626414349")
     ap.add_argument("--admobBannerId", default="ca-app-pub-3546008790006961/4883947277")
     ap.add_argument("--admobInterstitialId", default="ca-app-pub-3546008790006961/2919837333")
@@ -92,7 +90,7 @@ def main():
     replace_in_file(app_gradle, "versionCode = 1", f"versionCode = {args.versionCode}")
     replace_in_file(app_gradle, 'versionName = "1.0"', f'versionName = "{args.versionName}"')
 
-    # 3) Save config (urlMode + websiteUrl)
+    # 3) Save config
     config_path = os.path.join(android, "app", "src", "main", "assets", "app_config.json")
     cfg = {
         "urlMode": args.urlMode,
@@ -113,30 +111,23 @@ def main():
     # 5) AdMob patching
     if args.enableAdmob == "true":
         # Manifest Application ID
-        # (Replace any old/test IDs with real App ID)
-        replace_in_file(manifest, "ca-app-pub-3940256099942544~3347511713", args.admobAppId)
         replace_in_file(manifest, "pub-3546008790006961~3626414349", args.admobAppId)
 
-        # MainActivity IDs
-        replace_in_file(main_activity, "ca-app-pub-3940256099942544/1033173712", args.admobInterstitialId)
+        # MainActivity: Interstitial & Rewarded
         replace_in_file(main_activity, "ca-app-pub-3546008790006961/2919837333", args.admobInterstitialId)
-
-        replace_in_file(main_activity, "ca-app-pub-3940256099942544/5224354917", args.admobRewardedId)
         replace_in_file(main_activity, "ca-app-pub-3546008790006961/5224354917", args.admobRewardedId)
 
-        # Banner ID in XML
-        replace_in_file(activity_main, "ca-app-pub-3940256099942544/6300978111", args.admobBannerId)
+        # activity_main.xml: Banner ID
         replace_in_file(activity_main, "ca-app-pub-3546008790006961/4883947277", args.admobBannerId)
 
     else:
-        # Disable AdMob: set dummy IDs so app compiles but ads won't load
+        # Disable AdMob (set dummy IDs)
         replace_in_file(manifest, "pub-3546008790006961~3626414349", "DISABLED")
         replace_in_file(main_activity, "ca-app-pub-3546008790006961/2919837333", "DISABLED")
         replace_in_file(main_activity, "ca-app-pub-3546008790006961/5224354917", "DISABLED")
         replace_in_file(activity_main, "ca-app-pub-3546008790006961/4883947277", "DISABLED")
 
-    print("✅ Patch complete (AdMob only)")
-
+    print("✅ Patch complete (AdMob updated)")
 
 if __name__ == "__main__":
     main()
