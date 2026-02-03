@@ -3,6 +3,7 @@ import os
 import shutil
 import zipfile
 import json
+import re
 
 def write_file(path, content):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -16,6 +17,13 @@ def replace_in_file(path, old, new):
     with open(path, "w", encoding="utf-8") as f:
         f.write(data)
 
+def replace_regex_in_file(path, pattern, repl):
+    with open(path, "r", encoding="utf-8") as f:
+        data = f.read()
+    data = re.sub(pattern, repl, data, flags=re.MULTILINE)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(data)
+
 def unzip_website(zip_path, dest_www):
     if os.path.exists(dest_www):
         shutil.rmtree(dest_www)
@@ -24,17 +32,14 @@ def unzip_website(zip_path, dest_www):
     with zipfile.ZipFile(zip_path, "r") as z:
         z.extractall(dest_www)
 
-    # if zip contains nested folder, try to fix
     index1 = os.path.join(dest_www, "index.html")
     if not os.path.exists(index1):
-        # search index.html
         found = None
         for root, dirs, files in os.walk(dest_www):
             if "index.html" in files:
                 found = root
                 break
         if found:
-            # move found folder content to dest_www root
             tmp = dest_www + "_tmp"
             os.makedirs(tmp, exist_ok=True)
             for name in os.listdir(found):
@@ -92,11 +97,25 @@ def main():
 
     # AdMob enable/disable in Manifest
     if args.enableAdmob == "true":
-        # ensure meta-data exists (already in template)
-        pass
+        # Ensure correct AdMob App ID format in manifest if already present
+        replace_regex_in_file(
+            manifest,
+            r'android:name="com\.google\.android\.gms\.ads\.APPLICATION_ID"\s*/>\s*',
+            'android:name="com.google.android.gms.ads.APPLICATION_ID"/>\n'
+        )
+        # Fix pub- -> ca-app-pub- if user mistakenly added
+        replace_regex_in_file(
+            manifest,
+            r'android:value="pub-([0-9]+~[0-9]+)"',
+            r'android:value="ca-app-pub-\1"'
+        )
     else:
-        # disable by setting dummy id
-        replace_in_file(manifest, "ca-app-pub-3940256099942544~3347511713", "DISABLED")
+        # Disable AdMob by setting dummy application id
+        replace_regex_in_file(
+            manifest,
+            r'(<meta-data\s+android:name="com\.google\.android\.gms\.ads\.APPLICATION_ID"\s+android:value=")([^"]*)(")',
+            r'\1DISABLED\3'
+        )
 
     print("✅ Patch complete")
 
